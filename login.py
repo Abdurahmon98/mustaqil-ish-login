@@ -1,5 +1,7 @@
 #login
 #parol
+import os
+
 import mysql.connector
 import getpass
 
@@ -14,7 +16,7 @@ class User:
         self.passwords = []
         self.logins = []
         self.logins_and_passwords = []
-        #self.logins_passwords ()
+        self.logins_passwords ()
 
     def enter_the_system(self):
         pass
@@ -41,30 +43,32 @@ class User:
     def registr(self):
         name = input("Ismingizni kiriting: ").strip()
         while not name.isalpha() or len(name) < 3:
+            self.clear_str()
             print("To'g'ri kiriting")
             name = input("Ismingizni kiriting: ").strip()
 
-
-
+        self.clear_str()
         surname = input("Familiyangizni kiriting: ")
         while not surname.isalpha() or len(name) < 4:
+            self.clear_str()
             print("To'g'ri kiriting")
             surname = input("Ismingizni kiriting: ")
 
-
-
+        self.clear_str()
         age = input("Yoshingizni kiriting ").strip()
         while not age.isnumeric():
+            self.clear_str()
             print("To'g'ri kiriting")
             age = input("Yoshingizni kiriting ").strip()
 
-
+        self.clear_str()
         login = input("Login kiriting: ").strip()
         while not login.isalnum():
+            self.clear_str()
             print("Boshqatdan kiriting")
             login = input("Login kiriting: ").strip()
 
-
+        self.clear_str()
         password = getpass.getpass("Parol kiriting: ko'rinmaydi").strip()
         password1 = getpass.getpass("Parolni tasdiqlang: ko'rinmaydi").strip()
         while self.matn_bosh(password) or password1 != password:
@@ -83,30 +87,63 @@ class User:
         print("Muvaffaqiyatli ro'yxatdan o'tdingiz")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def login_enter(self):
-        print("men loginman")
+        print("Tizimga kirish uchun Login va Parolingizni kiriting:")
+        login_user = input("Login: ")
+        self.clear_str()
+        while not login_user.isalnum() not in self.logins:
+            self.clear_str()
+            print("Qaytadan kiriting:")
+            login_user = input("Login: ").strip()
+        my_data = self.database()
+        mycursor = my_data.cursor()
+        mycursor.execute(f"select password from info where login = '{login_user}'")
+        logi = None
+        for i in mycursor:
+            logi = i[0]
+        self.clear_str()
+        password = getpass.getpass("Parol: ")
+        while password != logi:
+            self.clear_str()
+            print("Xato qaytadan kiriting: ")
+            password = getpass.getpass("Parol: ")
+        self.clear_str()
+        print("Tizimga xush kelibsiz")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     def chang_login(self):
@@ -152,6 +189,26 @@ class User:
                 Delete account          [5]            
                                     
                                     """)
+    def logins_passwords (self):
+        my_dbasa = self.database()
+        mycursor = my_dbasa.cursor()
+        mycursor.execute("select Login, Password from info")
+        for i in mycursor:
+            self.logins_and_passwords.append(i)
+            for j in self.logins_and_passwords:
+                self.logins.append(j[0])
+                self.passwords.append(j[1])
+
+
+
+
+
+
+
+
+
+
+
 
     @staticmethod
     def database():
@@ -162,6 +219,9 @@ class User:
         database="userinfo"
             )
 
+    @staticmethod
+    def clear_str():
+        os.system("clear")
 
     @staticmethod
     def matn_bosh(str):
