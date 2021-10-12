@@ -89,7 +89,7 @@ class User:
 
     def login_enter(self):
         print("Tizimga kirish uchun Login va Parolingizni kiriting:")
-        login_user = input("Login: ")
+        login_user = input("Login: ").strip()
         self.clear_str()
         while not login_user.isalnum() not in self.logins:
             self.clear_str()
@@ -112,46 +112,65 @@ class User:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def chang_login(self):
-        print("men change loginman")
+        self.clear_str()
+        login_user = input("Login: ").strip()
+        self.clear_str()
+        while not login_user.isalnum() not in self.logins:
+            self.clear_str()
+            print("Qaytadan kiriting:")
+            login_user = input("Login: ").strip()
+        my_data = self.database()
+        mycursor = my_data.cursor()
+        mycursor.execute(f"select password from info where login = '{login_user}'")
+        logi = None
+        for i in mycursor:
+            logi = i[0]
+        self.clear_str()
+        password = getpass.getpass("Parol: ")
+        while password != logi:
+            self.clear_str()
+            print("Xato qaytadan kiriting: ")
+            password = getpass.getpass("Parol: ")
+        self.clear_str()
+        insert_new_login = input("Yangi login:").strip()
+        while not insert_new_login.isalnum() or insert_new_login in self.logins:
+            self.clear_str()
+            print("Error: Qaytadan kiriting:")
+            insert_new_login = input("Yangi login:").strip()
+
+
+        self.clear_str()
+        insert_new_password = input("Yangi parol:").strip()
+        while not insert_new_password.isnumeric() or insert_new_password in self.passwords:
+            self.clear_str()
+            print("Error: Qaytadan kiriting:")
+            insert_new_password = input("Yangi parol:").strip()
+        my_data = self.database()
+        mycursor = my_data.cursor()
+        mycursor.execute(f"update info set login = '{insert_new_login}', password = '{insert_new_password}'")
+        my_data.commit()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     def log_out(self):
         print("logoutman")
+
+
+
+
 
     def delete_account(self):
         print("deleete")
