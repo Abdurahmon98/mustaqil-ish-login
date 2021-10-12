@@ -151,64 +151,45 @@ class User:
         mycursor.execute(f"update info set login = '{insert_new_login}', password = '{insert_new_password}'")
         my_data.commit()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def log_out(self):
-        print("logoutman")
-
-
-
+        print("Tizmdan chiqdindiz")
+        exit()
 
 
     def delete_account(self):
-        print("deleete")
+        self.clear_str()
+        login_user = input("Login: ").strip()
+        self.clear_str()
+
+        while not login_user.isalnum() not in self.logins:
+            self.clear_str()
+            print("Qaytadan kiriting:")
+            login_user = input("Login: ").strip()
+
+        my_data = self.database()
+        mycursor = my_data.cursor()
+        mycursor.execute(f"select Password from info where login = '{login_user}'")
+        logi = None
+
+        for i in mycursor:
+            logi = i[0]
+        self.clear_str()
+        password_user = input("Parol:")
+
+        while password_user != logi:
+            print("Xato qaytdan kiriting")
+            password_user = input("Parol:")
+        self.clear_str()
+        input("Enterni bossangiz kettiz")
+
+        my_data = self.database()
+        mycursor = my_data.cursor()
+        mycursor.execute(f"delete from info where Login = '{login_user}'")
+        my_data.commit()
+        print("Delete account")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def frontend(self):
-        print("""Assalomu alaykum 
-                Ro'yxatdan o'tish       [1]
-                Login                   [2]
-                Loginni o'zgartirish    [3]
-                Dasturdan chiqib ketish [4]
-                Delete account          [5]            
-                                    
-                                    """)
-    def logins_passwords (self):
+     def logins_passwords (self):
         my_dbasa = self.database()
         mycursor = my_dbasa.cursor()
         mycursor.execute("select Login, Password from info")
@@ -218,16 +199,15 @@ class User:
                 self.logins.append(j[0])
                 self.passwords.append(j[1])
 
+    def frontend(self):
+        print("""Assalomu alaykum 
+                Ro'yxatdan o'tish       [1]
+                Login                   [2]
+                Loginni o'zgartirish    [3]
+                Dasturdan chiqib ketish [4]
+                Delete account          [5]            
 
-
-
-
-
-
-
-
-
-
+                                    """)
 
     @staticmethod
     def database():
